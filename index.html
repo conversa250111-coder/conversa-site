@@ -1,0 +1,703 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Conversa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<style>
+/* Layout: página única, coluna central de 1080px, fundo de partículas interativas, dois mascotes (PT verde / ES laranja) como fio condutor. */
+:root{
+  --bg:#F3F6F8; --surface:#FFFFFF; --ink:#0E1B24; --muted:#52646F; --line:#DAE3E8;
+  --pt:#18B27B; --pt-ink:#0A7A52; --pt-soft:#D9F4E8;
+  --es:#FF7A45; --es-ink:#C2400F; --es-soft:#FFE6D9;
+  --btn-bg:#0E1B24; --btn-fg:#FFFFFF;
+  --shadow:0 1px 2px rgba(14,27,36,.06),0 14px 34px -14px rgba(14,27,36,.2);
+  --font-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --font-body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1319; --surface:#121D25; --ink:#E8F0F3; --muted:#93A5AF; --line:#22313B;
+    --pt:#35D39A; --pt-ink:#4BE0A8; --pt-soft:#123A2D;
+    --es:#FF8A5B; --es-ink:#FF9A70; --es-soft:#40221A;
+    --btn-bg:#E8F0F3; --btn-fg:#0B1319;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -14px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1319; --surface:#121D25; --ink:#E8F0F3; --muted:#93A5AF; --line:#22313B;
+  --pt:#35D39A; --pt-ink:#4BE0A8; --pt-soft:#123A2D;
+  --es:#FF8A5B; --es-ink:#FF9A70; --es-soft:#40221A;
+  --btn-bg:#E8F0F3; --btn-fg:#0B1319;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -14px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:400 1rem/1.6 var(--font-body); -webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:12px 0;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+.layer{position:relative;z-index:1}
+.wrap{max-width:1080px;margin-inline:auto;min-width:0}
+a{color:inherit}
+h1,h2,h3{font-family:var(--font-display);margin:0;letter-spacing:-.025em;text-wrap:balance}
+h1{font-weight:700;font-size:clamp(2.35rem,6.2vw,4.2rem);line-height:1.02}
+h2{font-weight:700;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.08}
+h3{font-weight:700;font-size:1.12rem;line-height:1.25;letter-spacing:-.01em}
+p{margin:0}
+.lead{font-size:clamp(1.05rem,1.6vw,1.2rem);color:var(--muted);max-width:52ch}
+.eyebrow{display:inline-flex;align-items:center;gap:.55rem;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--pt-ink)}
+.eyebrow::before{content:"";width:22px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--pt),var(--es))}
+section{padding-block:clamp(52px,8vw,96px);scroll-margin-top:84px}
+.sec-head{display:grid;gap:.9rem;margin-bottom:clamp(28px,4vw,48px);max-width:640px}
+
+/* botões */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.6rem;padding:.85rem 1.4rem;border-radius:999px;font:700 .98rem/1 var(--font-body);text-decoration:none;border:1.5px solid transparent;overflow:hidden;isolation:isolate;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .2s,background .2s,color .25s}
+.btn svg{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.btn:hover svg{transform:translateY(2px)}
+.btn.go:hover svg{transform:translateX(3px)}
+.btn:focus-visible,.nav a:focus-visible,summary:focus-visible,.tab:focus-visible,.steps button:focus-visible,.link-btn:focus-visible{outline:2px solid var(--pt-ink);outline-offset:3px}
+.btn-primary{background:var(--btn-bg);color:var(--btn-fg)}
+.btn-primary::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--pt),var(--es));transform:translateX(-102%);transition:transform .5s cubic-bezier(.2,.8,.2,1);z-index:-1}
+.btn-primary:hover::before,.btn-primary:focus-visible::before{transform:none}
+.btn-primary:hover,.btn-primary:focus-visible{color:#0E1B24}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--ink);background:var(--surface)}
+.btn-sm{padding:.62rem 1.05rem;font-size:.9rem}
+
+/* navegação */
+.nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:20;display:flex;align-items:center;justify-content:space-between;gap:1rem;max-width:1080px;margin-inline:auto;padding:.5rem .6rem .5rem 1.1rem;border-radius:999px;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line)}
+.brand{display:inline-flex;align-items:center;gap:.6rem;font:700 1.15rem var(--font-display);text-decoration:none;letter-spacing:-.02em}
+.nav-links{display:flex;gap:1.4rem;font-size:.92rem;font-weight:500}
+.nav-links a{text-decoration:none;color:var(--muted);padding:.3rem 0;background:linear-gradient(90deg,var(--pt),var(--es)) 0 100%/0 2px no-repeat;transition:color .2s,background-size .3s}
+.nav-links a:hover{color:var(--ink);background-size:100% 2px}
+@media (max-width:820px){.nav-links{display:none}}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,64px);align-items:center;padding-block:clamp(36px,6vw,72px) clamp(40px,6vw,72px)}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--pt),var(--es)) 0 92%/100% .14em no-repeat;padding-bottom:.02em}
+.hero .lead{margin-top:1.3rem}
+.cta-row{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.9rem}
+.hero-note{margin-top:1.1rem;font-size:.86rem;color:var(--muted);display:flex;gap:.5rem;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--pt);display:inline-block}
+@media (max-width:880px){.hero{grid-template-columns:1fr}}
+
+/* cena com mascotes */
+.scene{background:var(--surface);border:1px solid var(--line);border-radius:30px;padding:clamp(16px,2.4vw,26px) clamp(12px,2vw,22px) 16px;box-shadow:var(--shadow);min-width:0}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2vw,20px);align-items:end}
+.side{display:flex;flex-direction:column;justify-content:flex-end;gap:12px;min-width:0}
+.bubble{position:relative;padding:.8rem .95rem;border-radius:18px;border:1.5px solid var(--line);background:var(--bg);min-height:106px;display:flex;flex-direction:column;justify-content:space-between;gap:.5rem;transition:opacity .25s,transform .25s,background .3s,border-color .3s}
+.bubble .txt{font-size:.98rem;line-height:1.35;font-weight:500}
+.bubble .meta{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.bubble::after{content:"";position:absolute;bottom:-8px;width:14px;height:14px;background:inherit;border:inherit;border-top:0;border-left:0;transform:rotate(45deg);border-radius:0 0 4px 0}
+.side-pt .bubble::after{left:26px}
+.side-es .bubble::after{right:26px}
+.side-pt .bubble.sender{background:var(--pt-soft);border-color:var(--pt)}
+.side-es .bubble.sender{background:var(--es-soft);border-color:var(--es)}
+.bubble.sender .meta{color:var(--ink)}
+.bubble.swap{opacity:.15;transform:translateY(5px)}
+.mascot{display:flex;justify-content:center}
+.mascot svg{width:100%;max-width:170px;height:auto;overflow:visible}
+.lang{text-align:center;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.side-pt .lang{color:var(--pt-ink)} .side-es .lang{color:var(--es-ink)}
+.ground{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);display:flex;justify-content:center}
+.chip{display:inline-flex;align-items:center;gap:.55rem;font-size:.84rem;font-weight:500;color:var(--muted);padding:.4rem .85rem;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--pt);animation:pulse 2s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--pt) 60%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+
+/* mascote */
+.m .body-pt{fill:var(--pt)} .m .body-es{fill:var(--es)}
+.m .eye{fill:#fff}.m .pupil{fill:#0E1B24;transition:transform .12s ease-out}
+.m .mouth{fill:none;stroke:#0E1B24;stroke-width:3.5;stroke-linecap:round}
+.m .blush{fill:#fff;opacity:.35}
+.m .hand{fill:inherit}
+.m .bob{animation:bob 3.4s ease-in-out infinite}
+.m-es .bob{animation-delay:-1.6s}
+.m .eyes{transform-box:fill-box;transform-origin:center;animation:blink 5.5s infinite}
+.m .hand{transform-box:fill-box;transform-origin:center;animation:wave 2.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@keyframes wave{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(-14deg)}}
+
+/* revelar ao rolar (só deslocamento, o texto já está visível) */
+.rv{transform:translateY(16px);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{transform:none}
+
+/* como funciona */
+.how{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,4vw,56px);align-items:start}
+.flow{display:grid;gap:.9rem;counter-reset:f}
+.flow .step{display:grid;grid-template-columns:44px 1fr;gap:1rem;padding:1.05rem 1.1rem;background:var(--surface);border:1px solid var(--line);border-radius:20px;transition:transform .3s,border-color .3s}
+.flow .step:hover{transform:translateX(4px);border-color:var(--ink)}
+.flow .ico{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--pt-soft);color:var(--pt-ink)}
+.flow .step:nth-child(even) .ico{background:var(--es-soft);color:var(--es-ink)}
+.flow .step p{color:var(--muted);font-size:.95rem;margin-top:.2rem}
+.phone{background:var(--surface);border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.phone-top{display:flex;align-items:center;gap:.8rem;padding:.9rem 1.1rem;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--es);color:#0E1B24;display:grid;place-items:center;font:700 1rem var(--font-display)}
+.phone-top b{display:block;line-height:1.2}.phone-top small{color:var(--muted);font-size:.8rem}
+.who{flex:1;min-width:110px}
+.switch{display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;font-size:.82rem;font-weight:700}
+.switch input{position:absolute;opacity:0;width:1px;height:1px}
+.track{width:42px;height:24px;border-radius:999px;background:var(--line);position:relative;transition:background .25s}
+.track::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.switch input:checked + .track{background:var(--pt)}
+.switch input:checked + .track::after{transform:translateX(18px)}
+.switch input:focus-visible + .track{outline:2px solid var(--pt-ink);outline-offset:3px}
+.msgs{display:grid;gap:.7rem;padding:1.1rem;background:var(--bg);min-height:300px;align-content:start}
+.msg{max-width:88%;background:var(--surface);border:1px solid var(--line);border-radius:18px 18px 18px 6px;padding:.65rem .9rem;animation:pop .4s cubic-bezier(.2,.8,.2,1) both}
+.msg .orig{display:block;margin-top:.35rem;padding-top:.35rem;border-top:1px dashed var(--line);font-size:.85rem;color:var(--muted);font-style:italic}
+.link-btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-block;margin-top:.35rem;font-size:.78rem;font-weight:700;color:var(--pt-ink);text-decoration:underline;text-underline-offset:3px}
+@keyframes pop{from{transform:scale(.96) translateY(6px)}to{transform:none}}
+.hint{padding:.7rem 1.1rem 1rem;font-size:.82rem;color:var(--muted);background:var(--bg)}
+@media (max-width:880px){.how{grid-template-columns:1fr}}
+
+/* IA */
+.ai{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,4vw,56px);align-items:center}
+.ai .lead{margin-top:1rem}
+.tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+.tab{all:unset;box-sizing:border-box;cursor:pointer;padding:.5rem .95rem;border-radius:999px;border:1.5px solid var(--line);font-size:.9rem;font-weight:700;background:var(--surface);transition:background .2s,border-color .2s,color .2s}
+.tab:hover{border-color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.demo{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:clamp(16px,2.4vw,26px);box-shadow:var(--shadow);min-width:0}
+.line{display:grid;gap:.25rem;padding:.9rem 1rem;border-radius:16px;animation:pop .4s cubic-bezier(.2,.8,.2,1) both}
+.line small{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.line span{font-size:1.1rem;font-weight:500;overflow-wrap:anywhere}
+.line.a{background:var(--pt-soft)}.line.a small{color:var(--pt-ink)}
+.line.b{background:var(--es-soft)}.line.b small{color:var(--es-ink)}
+.arrow{display:flex;justify-content:center;color:var(--muted);padding:.35rem 0}
+.note{margin-top:1rem;color:var(--muted);font-size:.93rem;min-height:3.2em}
+.tiny{margin-top:.6rem;font-size:.78rem;color:var(--muted)}
+@media (max-width:880px){.ai{grid-template-columns:1fr}}
+
+/* recursos */
+.feats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6rem 1.4rem}
+.feat{border-top:1px solid var(--line);padding-top:1.1rem;display:grid;gap:.55rem;align-content:start}
+.feat .tile{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--pt-soft);color:var(--pt-ink);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.feat:nth-child(even) .tile{background:var(--es-soft);color:var(--es-ink)}
+.feat:hover .tile{transform:translateY(-3px) rotate(-6deg)}
+.feat p{color:var(--muted);font-size:.9rem}
+.foot-note{margin-top:2rem;color:var(--muted);font-size:.88rem}
+@media (max-width:960px){.feats{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.feats{grid-template-columns:1fr}}
+
+/* segurança */
+.sec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:1.3rem;display:grid;grid-template-columns:44px 1fr;gap:1rem;align-content:start;min-width:0}
+.sec .ico{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--pt-soft);color:var(--pt-ink)}
+.sec p{color:var(--muted);font-size:.94rem;margin-top:.3rem}
+.sec.warn .ico{background:var(--es-soft);color:var(--es-ink)}
+.callout{margin-top:1rem;padding:1.2rem 1.3rem;border-radius:22px;background:var(--surface);border:1px dashed var(--ink);display:grid;gap:.35rem}
+.callout p{color:var(--muted);font-size:.95rem}
+@media (max-width:760px){.sec-grid{grid-template-columns:1fr}}
+
+/* instalação */
+.install{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,40px);align-items:start}
+.col h3{font-size:1.35rem;margin-bottom:.35rem}
+.col .sub{color:var(--muted);font-size:.93rem;margin-bottom:1.1rem}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:.6rem;counter-reset:s}
+.steps li{counter-increment:s}
+.steps button{all:unset;box-sizing:border-box;display:flex;gap:.9rem;align-items:flex-start;width:100%;padding:.9rem 1rem;border-radius:16px;background:var(--surface);border:1px solid var(--line);cursor:pointer;transition:border-color .2s,transform .2s}
+.steps button:hover{border-color:var(--ink);transform:translateY(-1px)}
+.steps .n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 .85rem var(--font-display);background:var(--pt-soft);color:var(--pt-ink);transition:background .25s,color .25s}
+.steps .n::before{content:counter(s)}
+.steps li.done .n{background:var(--pt);color:#06231A}
+.steps li.done .n::before{content:"\2713"}
+.steps .t{font-size:.95rem;min-width:0;overflow-wrap:anywhere}
+.steps li.done .t{color:var(--muted)}
+.steps .t em{display:block;font-style:normal;color:var(--muted);font-size:.85rem;margin-top:.15rem}
+.prog{margin-top:.9rem;font-size:.85rem;color:var(--muted);display:flex;align-items:center;gap:.7rem}
+.bar{flex:1;height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pt),var(--es));transition:width .4s cubic-bezier(.2,.8,.2,1)}
+.install .btn{margin-top:1.2rem}
+@media (max-width:880px){.install{grid-template-columns:1fr}}
+
+/* FAQ */
+.faq{max-width:760px;display:grid;gap:.6rem}
+details{background:var(--surface);border:1px solid var(--line);border-radius:18px;transition:border-color .2s}
+details[open],details:hover{border-color:var(--ink)}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.2rem;font-weight:700}
+summary::-webkit-details-marker{display:none}
+.plus{flex:none;width:22px;height:22px;position:relative;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.plus::before,.plus::after{content:"";position:absolute;left:4px;right:4px;top:10px;height:2px;border-radius:2px;background:currentColor}
+.plus::after{transform:rotate(90deg)}
+details[open] .plus{transform:rotate(45deg)}
+details p{padding:0 1.2rem 1.1rem;color:var(--muted);font-size:.96rem}
+
+/* chamada final */
+.final{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:36px;padding:clamp(28px,5vw,56px);display:grid;grid-template-columns:auto 1fr auto;gap:clamp(12px,3vw,40px);align-items:end;box-shadow:var(--shadow)}
+.final .mascot svg{max-width:120px}
+.final .mid{display:grid;gap:1rem;justify-items:center;text-align:center;align-self:center}
+.final .mid p{color:var(--muted)}
+@media (max-width:760px){
+  .final{grid-template-columns:1fr 1fr;grid-template-areas:"mid mid" "a b"}
+  .final .mid{grid-area:mid}
+  .final .ma{grid-area:a}.final .mb{grid-area:b}
+}
+footer{padding-block:28px max(36px,env(safe-area-inset-bottom,0px));color:var(--muted);font-size:.86rem;display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;justify-content:space-between;border-top:1px solid var(--line);margin-top:56px}
+</style>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<header class="layer">
+  <nav class="nav" aria-label="Principal">
+    <a class="brand" href="#topo" aria-label="Conversa, início">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 14a8 8 0 0 1 8-8h4a8 8 0 0 1 8 8v1a8 8 0 0 1-8 8H9l-5 4z" fill="var(--pt)"/><path d="M28 19a7 7 0 0 0-7-7h-2a7 7 0 0 0-7 7 7 7 0 0 0 7 7h5l4 3z" fill="var(--es)" opacity=".92"/></svg>
+      Conversa
+    </a>
+    <div class="nav-links">
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#seguranca">Segurança</a>
+      <a href="#instalar">Instalar</a>
+      <a href="#faq">Dúvidas</a>
+    </div>
+    <a class="btn btn-primary btn-sm dl" href="https://expo.dev/accounts/jgsc_2/projects/conversa/builds/34c3bcdc-0901-4408-ac0d-59ef5bdce8dd" target="_blank" rel="noopener">Baixar</a>
+  </nav>
+</header>
+
+<main class="layer" id="topo">
+  <div class="wrap">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div>
+        <span class="eyebrow">Mensageiro para Android</span>
+        <h1 style="margin-top:1rem">Duas pessoas, <em>dois idiomas</em>, uma única conversa.</h1>
+        <p class="lead">O Conversa traduz cada mensagem na hora. Você escreve em português, a outra pessoa lê em espanhol, e o contrário também vale.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary dl" href="https://expo.dev/accounts/jgsc_2/projects/conversa/builds/34c3bcdc-0901-4408-ac0d-59ef5bdce8dd" target="_blank" rel="noopener">
+            Baixar o app
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12m0 0l-5-5m5 5l5-5M5 20h14"/></svg>
+          </a>
+          <a class="btn btn-ghost go" href="#como-funciona">
+            Ver como funciona
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
+          </a>
+        </div>
+        <p class="hero-note"><span class="dot"></span> Português do Brasil ⇄ Espanhol, em app para Android</p>
+      </div>
+
+      <div class="scene" aria-label="Exemplo de conversa traduzida entre dois mascotes">
+        <div class="pair">
+          <div class="side side-pt">
+            <div class="bubble sender" id="bPt"><span class="txt">Oi! Tudo bem por aí?</span><span class="meta">Escreve em português</span></div>
+            <div class="mascot" data-kind="pt"></div>
+            <div class="lang">Português</div>
+          </div>
+          <div class="side side-es">
+            <div class="bubble" id="bEs"><span class="txt">¡Hola! ¿Todo bien por ahí?</span><span class="meta">Lê em espanhol</span></div>
+            <div class="mascot" data-kind="es"></div>
+            <div class="lang">Español</div>
+          </div>
+        </div>
+        <div class="ground"><span class="chip"><i class="pulse"></i> Tradução automática com IA</span></div>
+      </div>
+    </div>
+
+    <!-- COMO FUNCIONA -->
+    <section id="como-funciona">
+      <div class="sec-head rv">
+        <span class="eyebrow">Como funciona</span>
+        <h2>Cada um escreve na sua língua. O app cuida do resto.</h2>
+        <p class="lead">Não precisa copiar a mensagem, abrir outro app e voltar. A tradução acontece dentro da própria conversa.</p>
+      </div>
+      <div class="how">
+        <div class="flow rv" id="flow"></div>
+        <div class="rv">
+          <div class="phone">
+            <div class="phone-top">
+              <span class="avatar">M</span>
+              <div class="who"><b>Mateo</b><small>escreve em espanhol</small></div>
+              <label class="switch"><input type="checkbox" id="tg" checked><span class="track"></span><span>Tradução</span></label>
+            </div>
+            <div class="msgs" id="msgs"></div>
+            <p class="hint">Teste: desligue a tradução ou toque em “ver original”. Exemplo ilustrativo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IA -->
+    <section id="ia">
+      <div class="ai">
+        <div class="rv">
+          <span class="eyebrow">Tradução contextual</span>
+          <h2 style="margin-top:.9rem">Traduz o sentido, não só as palavras.</h2>
+          <p class="lead">O Conversa usa inteligência artificial (integração com a API do Gemini) para entender gírias, humor e carinho. As mensagens anteriores ajudam a entender uma frase nova.</p>
+        </div>
+        <div class="rv">
+          <div class="tabs" role="tablist" aria-label="Exemplos de tradução" id="tabs"></div>
+          <div class="demo" id="demo" aria-live="polite"></div>
+          <p class="tiny">Exemplos ilustrativos do tipo de tradução que o app busca fazer. Nenhuma tradução automática é perfeita, por isso o original fica sempre disponível.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECURSOS -->
+    <section id="recursos">
+      <div class="sec-head rv">
+        <span class="eyebrow">Recursos</span>
+        <h2>Um mensageiro completo, pensado para dois idiomas.</h2>
+      </div>
+      <div class="feats rv" id="feats"></div>
+      <p class="foot-note">A disponibilidade de cada recurso depende da versão instalada e da implementação concluída.</p>
+    </section>
+
+    <!-- SEGURANÇA -->
+    <section id="seguranca">
+      <div class="sec-head rv">
+        <span class="eyebrow">Sobre o download</span>
+        <h2>Por que o Android avisa, e como instalar com tranquilidade.</h2>
+        <p class="lead">O Conversa é distribuído como arquivo APK, fora da Google Play. Para o Android, qualquer app instalado assim gera um aviso. Aqui está o que isso significa na prática.</p>
+      </div>
+      <div class="sec-grid rv" id="secgrid"></div>
+      <div class="callout rv">
+        <h3>A regra que mais protege você</h3>
+        <p>Um APK não passa pela revisão da Google Play, então a origem do arquivo é o que importa. Baixe o Conversa apenas pelos botões desta página e não instale cópias que outra pessoa mandou por mensagem ou encontrou em outros sites.</p>
+      </div>
+    </section>
+
+    <!-- INSTALAR -->
+    <section id="instalar">
+      <div class="sec-head rv">
+        <span class="eyebrow">Passo a passo</span>
+        <h2>Do download à primeira conversa.</h2>
+        <p class="lead">Toque em cada passo para marcar como feito e acompanhar onde você parou.</p>
+      </div>
+      <div class="install rv">
+        <div class="col">
+          <h3>1. Baixar e instalar</h3>
+          <p class="sub">Leva cerca de dois minutos, no próprio celular.</p>
+          <ol class="steps" data-prog="p1">
+            <li><button type="button"><span class="n"></span><span class="t">Abra esta página no celular Android.<em>Se estiver no computador, envie o link para o seu celular.</em></span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Toque em <strong>Baixar o app</strong>.<em>Você vai para a página da versão no Expo. Use o botão de download que aparece lá.</em></span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Se o navegador avisar que o arquivo pode ser perigoso, toque em <strong>Baixar mesmo assim</strong>.<em>É o aviso padrão do Chrome para qualquer arquivo APK.</em></span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Abra o arquivo baixado.<em>Pela notificação do navegador ou na pasta Downloads.</em></span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Se o Android pedir, permita instalar apps desta fonte.<em>Toque em Configurações, ative a opção para o navegador e volte para a instalação.</em></span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Toque em <strong>Instalar</strong>.<em>Se o Google Play Protect aparecer, você pode pedir que ele analise o app antes de continuar.</em></span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Toque em <strong>Abrir</strong> e pronto.</span></button></li>
+          </ol>
+          <div class="prog"><span id="p1t">0 de 7</span><span class="bar"><i id="p1b"></i></span></div>
+          <a class="btn btn-primary dl" href="https://expo.dev/accounts/jgsc_2/projects/conversa/builds/34c3bcdc-0901-4408-ac0d-59ef5bdce8dd" target="_blank" rel="noopener">
+            Baixar o app
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12m0 0l-5-5m5 5l5-5M5 20h14"/></svg>
+          </a>
+        </div>
+        <div class="col">
+          <h3>2. Primeiros passos no app</h3>
+          <p class="sub">Configure uma vez e converse no seu idioma.</p>
+          <ol class="steps" data-prog="p2">
+            <li><button type="button"><span class="n"></span><span class="t">Entre ou crie a sua conta.</span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Escolha o seu idioma.<em>Português do Brasil ou espanhol. A outra pessoa escolhe o dela.</em></span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Permita as notificações.<em>Assim você recebe as mensagens mesmo com o app fechado.</em></span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Abra uma conversa e escreva na sua língua.<em>A tradução aparece sozinha para a outra pessoa.</em></span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Toque numa mensagem para ver o texto original.<em>Útil para conferir gírias e expressões.</em></span></button></li>
+            <li><button type="button"><span class="n"></span><span class="t">Ajuste o que preferir.<em>Ligue ou desligue a tradução e escolha entre tema claro e escuro.</em></span></button></li>
+          </ol>
+          <div class="prog"><span id="p2t">0 de 6</span><span class="bar"><i id="p2b"></i></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="sec-head rv">
+        <span class="eyebrow">Dúvidas</span>
+        <h2>Perguntas frequentes</h2>
+      </div>
+      <div class="faq rv">
+        <details><summary>É seguro instalar o Conversa? <span class="plus"></span></summary><p>O app é distribuído fora da Google Play, por isso o Android mostra avisos. Baixe somente pelos botões desta página, confira as permissões que o Android pede na instalação e aceite apenas o que faz sentido para um mensageiro. Você pode desinstalar a qualquer momento.</p></details>
+        <details><summary>Preciso saber o idioma da outra pessoa? <span class="plus"></span></summary><p>Não. Cada pessoa escreve e lê no próprio idioma. O Conversa foi pensado especialmente para português brasileiro e espanhol.</p></details>
+        <details><summary>Posso desligar a tradução? <span class="plus"></span></summary><p>Sim. A tradução automática pode ser desativada quando você quiser, e o texto original continua disponível para consulta.</p></details>
+        <details><summary>A tradução é sempre perfeita? <span class="plus"></span></summary><p>Nenhuma tradução automática é. A IA usa o contexto da conversa para chegar mais perto do sentido, mas em caso de dúvida você pode abrir a mensagem original.</p></details>
+        <details><summary>O que acontece com minhas mensagens? <span class="plus"></span></summary><p>O Conversa usa o Supabase para armazenar os dados e sincronizar as conversas em tempo real. Para traduzir, o texto das mensagens é enviado ao serviço de IA integrado (API do Gemini).</p></details>
+        <details><summary>Funciona no iPhone? <span class="plus"></span></summary><p>Por enquanto, o Conversa é um aplicativo para Android.</p></details>
+        <details><summary>Como desinstalar? <span class="plus"></span></summary><p>Pressione o ícone do Conversa na tela inicial ou na lista de apps e escolha Desinstalar. Também é possível fazer isso em Configurações, Apps.</p></details>
+      </div>
+    </section>
+
+    <!-- FINAL -->
+    <section style="padding-top:clamp(24px,4vw,40px)">
+      <div class="final rv">
+        <div class="mascot ma" data-kind="pt"></div>
+        <div class="mid">
+          <h2>Converse sem barreiras.</h2>
+          <p>Instale o Conversa e fale com quem você gosta no seu idioma.</p>
+          <a class="btn btn-primary dl" href="https://expo.dev/accounts/jgsc_2/projects/conversa/builds/34c3bcdc-0901-4408-ac0d-59ef5bdce8dd" target="_blank" rel="noopener">
+            Baixar o app
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12m0 0l-5-5m5 5l5-5M5 20h14"/></svg>
+          </a>
+        </div>
+        <div class="mascot mb" data-kind="es"></div>
+      </div>
+    </section>
+
+    <footer>
+      <span>Conversa · Para Android</span>
+      <span>Feito com Expo, Supabase e Gemini</span>
+    </footer>
+  </div>
+</main>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- ícones ---------- */
+  var IC = {
+    msg:'<path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.3A8 8 0 1 1 21 12z"/>',
+    swap:'<path d="M7 7h12l-3-3M17 17H5l3 3"/>',
+    spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16v4M17 18h4"/>',
+    tog:'<rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="3"/>',
+    eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    bolt:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    bell:'<path d="M18 16V11a6 6 0 0 0-12 0v5l-2 2h16z"/><path d="M10 21h4"/>',
+    smile:'<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9.5h.01M15 9.5h.01"/>',
+    moon:'<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>',
+    ban:'<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
+    layout:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18"/>',
+    shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    warn:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>',
+    key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
+    trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+    cloud:'<path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>',
+    down:'<path d="M12 4v12m0 0l-5-5m5 5l5-5M5 20h14"/>',
+    arrow:'<path d="M5 12h14m-6-6l6 6-6 6"/>'
+  };
+  function icon(n,s){s=s||22;return '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[n]+'</svg>';}
+
+  /* ---------- mascotes ---------- */
+  function mascot(kind){
+    var es = kind==='es';
+    var hx = es ? 12 : 148;
+    return '<svg viewBox="0 0 160 140" class="m m-'+kind+'" role="img" aria-label="Mascote '+(es?'espanhol':'brasileiro')+'">'+
+      '<g class="bob">'+
+      '<path class="body-'+kind+'" d="M10 136C10 66 42 26 80 26s70 40 70 110z"/>'+
+      '<circle class="hand" cx="'+hx+'" cy="88" r="11" fill="var(--'+kind+')"/>'+
+      '<g class="eyes">'+
+        '<ellipse class="eye" cx="60" cy="78" rx="12" ry="14"/><circle class="pupil" cx="60" cy="80" r="5.5"/>'+
+        '<ellipse class="eye" cx="100" cy="78" rx="12" ry="14"/><circle class="pupil" cx="100" cy="80" r="5.5"/>'+
+      '</g>'+
+      '<circle class="blush" cx="40" cy="102" r="7"/><circle class="blush" cx="120" cy="102" r="7"/>'+
+      '<path class="mouth" d="M68 104q12 12 24 0"/>'+
+      '</g></svg>';
+  }
+  document.querySelectorAll('.mascot').forEach(function(el){el.innerHTML=mascot(el.dataset.kind);});
+  if(!reduce){
+    addEventListener('pointermove',function(e){
+      document.querySelectorAll('.pupil').forEach(function(p){
+        var r=p.ownerSVGElement.getBoundingClientRect();
+        var cx=r.left+r.width/2, cy=r.top+r.height*.55;
+        var dx=e.clientX-cx, dy=e.clientY-cy, d=Math.hypot(dx,dy)||1, k=Math.min(4,d/50);
+        p.style.transform='translate('+(dx/d*k)+'px,'+(dy/d*k)+'px)';
+      });
+    },{passive:true});
+  }
+
+  /* ---------- conversa do hero ---------- */
+  var EX=[
+    {from:'pt',pt:'Oi! Tudo bem por aí?',es:'¡Hola! ¿Todo bien por ahí?'},
+    {from:'es',es:'Todo bien, ¿y tú? ¡Qué calor!',pt:'Tudo certo, e você? Que calor!'},
+    {from:'pt',pt:'Tô morrendo de saudade 😅',es:'Te extraño un montón 😅'},
+    {from:'es',es:'¡Vale, nos vemos el sábado!',pt:'Beleza, a gente se vê no sábado!'}
+  ];
+  var bPt=document.getElementById('bPt'), bEs=document.getElementById('bEs'), ei=0;
+  function setB(b,txt,meta,sender){
+    b.querySelector('.txt').textContent=txt;
+    b.querySelector('.meta').textContent=meta;
+    b.classList.toggle('sender',sender);
+  }
+  function stepEx(){
+    ei=(ei+1)%EX.length; var e=EX[ei];
+    bPt.classList.add('swap'); bEs.classList.add('swap');
+    setTimeout(function(){
+      setB(bPt,e.pt,e.from==='pt'?'Escreve em português':'Lê em português',e.from==='pt');
+      setB(bEs,e.es,e.from==='es'?'Escreve em espanhol':'Lê em espanhol',e.from==='es');
+      bPt.classList.remove('swap'); bEs.classList.remove('swap');
+    },260);
+  }
+  if(!reduce) setInterval(stepEx,3800);
+
+  /* ---------- fluxo ---------- */
+  var FLOW=[
+    ['msg','Você escreve no seu idioma','Digite como falaria no dia a dia, com gírias e emojis.'],
+    ['spark','O app entende o contexto','A IA identifica o idioma e considera as mensagens anteriores.'],
+    ['swap','A tradução chega pronta','A outra pessoa lê na própria língua, sem sair da conversa.'],
+    ['eye','O original fica a um toque','Compare a mensagem recebida com o texto de quem escreveu.']
+  ];
+  document.getElementById('flow').innerHTML=FLOW.map(function(f){
+    return '<div class="step"><div class="ico">'+icon(f[0])+'</div><div><h3>'+f[1]+'</h3><p>'+f[2]+'</p></div></div>';
+  }).join('');
+
+  /* ---------- demo do celular ---------- */
+  var MSG=[
+    {es:'¡Buenísimo! Mañana te llamo, ¿vale?',pt:'Que ótimo! Amanhã te ligo, tá?'},
+    {es:'Estoy muerto de cansancio 😴',pt:'Tô morto de cansaço 😴'},
+    {es:'¿Quedamos el sábado en la playa?',pt:'Bora marcar sábado na praia?'}
+  ];
+  var msgsEl=document.getElementById('msgs'), tg=document.getElementById('tg'), open={}, first=true;
+  function renderMsgs(){
+    var on=tg.checked;
+    msgsEl.innerHTML=MSG.map(function(m,i){
+      var h='<div class="msg" style="animation-delay:'+(first?0:i*60)+'ms">'+(on?m.pt:m.es);
+      if(on){
+        h+=open[i]?'<span class="orig">'+m.es+'</span>':'';
+        h+='<br><button type="button" class="link-btn" data-i="'+i+'">'+(open[i]?'ocultar original':'ver original')+'</button>';
+      }
+      return h+'</div>';
+    }).join('');
+    first=false;
+  }
+  msgsEl.addEventListener('click',function(e){
+    var b=e.target.closest('.link-btn'); if(!b) return;
+    var i=b.dataset.i; open[i]=!open[i]; renderMsgs();
+  });
+  tg.addEventListener('change',renderMsgs);
+  renderMsgs();
+
+  /* ---------- abas de IA ---------- */
+  var TABS=[
+    {k:'Gírias',a:['Português','Tô de boa, pode vir.'],b:['Español','Estoy tranquilo, puedes venir.'],n:'A expressão popular vira uma expressão natural no outro idioma, sem tradução palavra por palavra.'},
+    {k:'Ironia e humor',a:['Português','Nossa, que pontualidade, hein? 🙄'],b:['Español','Vaya, qué puntualidad, ¿eh? 🙄'],n:'O tom irônico e o emoji continuam dizendo o que você quis dizer.'},
+    {k:'Carinho',a:['Português','Saudade de você, meu bem ❤️'],b:['Español','Te extraño, mi vida ❤️'],n:'Expressões de afeto ganham o equivalente que se usa de verdade no outro idioma.'},
+    {k:'Falsos amigos',a:['Español','Estoy embarazada de mi segundo hijo.'],b:['Português','Estou grávida do meu segundo filho.'],n:'Palavras parecidas com significados diferentes, como “embarazada”, não viram “embaraçada”.',flip:true}
+  ];
+  var tabsEl=document.getElementById('tabs'), demoEl=document.getElementById('demo');
+  tabsEl.innerHTML=TABS.map(function(t,i){return '<button type="button" role="tab" class="tab" data-i="'+i+'" aria-selected="'+(i===0)+'">'+t.k+'</button>';}).join('');
+  function showTab(i){
+    var t=TABS[i];
+    var ca=t.flip?'b':'a', cb=t.flip?'a':'b';
+    demoEl.innerHTML='<div class="line '+(t.a[0]==='Português'?'a':'b')+'"><small>'+t.a[0]+'</small><span>'+t.a[1]+'</span></div>'+
+      '<div class="arrow">'+icon('down',20)+'</div>'+
+      '<div class="line '+(t.b[0]==='Português'?'a':'b')+'"><small>'+t.b[0]+'</small><span>'+t.b[1]+'</span></div>'+
+      '<p class="note">'+t.n+'</p>';
+    tabsEl.querySelectorAll('.tab').forEach(function(b,j){b.setAttribute('aria-selected',String(j===i));});
+  }
+  tabsEl.addEventListener('click',function(e){var b=e.target.closest('.tab');if(b)showTab(+b.dataset.i);});
+  showTab(0);
+
+  /* ---------- recursos ---------- */
+  var FE=[
+    ['msg','Conversas individuais','Um chat direto com cada pessoa.'],
+    ['swap','Tradução bidirecional','Português para espanhol e espanhol para português.'],
+    ['spark','Tradução com IA','Interpreta o contexto, não só o texto.'],
+    ['tog','Liga e desliga','Desative a tradução quando precisar.'],
+    ['eye','Mensagem original','Consulte o texto de quem escreveu.'],
+    ['layout','Tela limpa','Você vê a versão traduzida por padrão.'],
+    ['bolt','Tempo real','Mensagens sincronizadas sem atualizar a tela.'],
+    ['clock','Histórico','Suas conversas continuam salvas.'],
+    ['bell','Notificações','Aviso quando chega uma mensagem nova.'],
+    ['smile','GIFs e figurinhas','Para conversar do jeito que você gosta.'],
+    ['moon','Tema claro e escuro','Escolha o visual mais confortável.'],
+    ['ban','Bloqueio de usuários','Controle quem pode falar com você.']
+  ];
+  document.getElementById('feats').innerHTML=FE.map(function(f){
+    return '<div class="feat"><div class="tile">'+icon(f[0])+'</div><h3>'+f[1]+'</h3><p>'+f[2]+'</p></div>';
+  }).join('');
+
+  /* ---------- segurança ---------- */
+  var SE=[
+    ['warn','O aviso do Android é esperado','Todo APK instalado fora da Google Play gera aviso, seja de qual app for. Ele não significa, por si só, que o arquivo seja perigoso, nem que seja seguro.',true],
+    ['key','Baixe só por esta página','Os botões levam à página oficial da versão no Expo, o serviço usado para gerar o aplicativo.',false],
+    ['shield','Deixe o Play Protect analisar','Durante a instalação, o Android pode oferecer a análise do app. Se aparecer, aceite.',false],
+    ['bell','Confira as permissões','Aceite o que faz sentido para um mensageiro, como notificações. Negue o que parecer estranho.',false],
+    ['cloud','Para onde vão as mensagens','O Supabase sincroniza as conversas. Para traduzir, o texto passa pelo serviço de IA integrado (API do Gemini).',false],
+    ['trash','Você pode remover quando quiser','Desinstale o app pelo Android a qualquer momento, como qualquer outro aplicativo.',false]
+  ];
+  document.getElementById('secgrid').innerHTML=SE.map(function(s){
+    return '<div class="sec'+(s[3]?' warn':'')+'"><div class="ico">'+icon(s[0])+'</div><div><h3>'+s[1]+'</h3><p>'+s[2]+'</p></div></div>';
+  }).join('');
+
+  /* ---------- listas de passos ---------- */
+  document.querySelectorAll('.steps').forEach(function(ol){
+    var id=ol.dataset.prog, items=ol.querySelectorAll('li');
+    function upd(){
+      var d=ol.querySelectorAll('li.done').length;
+      document.getElementById(id+'t').textContent=d+' de '+items.length;
+      document.getElementById(id+'b').style.width=(d/items.length*100)+'%';
+    }
+    ol.addEventListener('click',function(e){
+      var li=e.target.closest('li'); if(!li) return;
+      li.classList.toggle('done'); li.querySelector('button').setAttribute('aria-pressed',String(li.classList.contains('done'))); upd();
+    });
+    ol.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed','false');});
+  });
+
+  /* ---------- revelar ao rolar ---------- */
+  var rv=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window && !reduce){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+    rv.forEach(function(el){io.observe(el);});
+  } else { rv.forEach(function(el){el.classList.add('in');}); }
+
+  /* ---------- botões magnéticos ---------- */
+  if(!reduce){
+    document.querySelectorAll('.btn').forEach(function(b){
+      b.addEventListener('pointermove',function(e){
+        var r=b.getBoundingClientRect();
+        b.style.transform='translate('+((e.clientX-r.left-r.width/2)*.08)+'px,'+((e.clientY-r.top-r.height/2)*.18)+'px)';
+      });
+      b.addEventListener('pointerleave',function(){b.style.transform='';});
+    });
+  }
+
+  /* ---------- fundo interativo ---------- */
+  var cv=document.getElementById('bg'), cx=cv.getContext('2d');
+  var W=0,H=0,P=[],M={x:-9999,y:-9999},cols=['#18B27B','#FF7A45','#52646F'];
+  function readCols(){
+    var s=getComputedStyle(document.documentElement);
+    cols=[s.getPropertyValue('--pt').trim()||cols[0],s.getPropertyValue('--es').trim()||cols[1],s.getPropertyValue('--muted').trim()||cols[2]];
+  }
+  function size(){
+    var D=Math.min(devicePixelRatio||1,2);
+    W=innerWidth;H=innerHeight;
+    cv.width=W*D;cv.height=H*D;cv.style.width=W+'px';cv.style.height=H+'px';
+    cx.setTransform(D,0,0,D,0,0);
+    var n=Math.max(18,Math.min(70,Math.round(W*H/20000)));
+    P=[];for(var i=0;i<n;i++)P.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:1.5+Math.random()*2.6,c:i%3});
+    readCols();
+    if(reduce)draw();
+  }
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    var i,j,a,b,d;
+    if(!reduce){
+      for(i=0;i<P.length;i++){
+        a=P[i];a.x+=a.vx;a.y+=a.vy;
+        var dx=a.x-M.x,dy=a.y-M.y;d=Math.hypot(dx,dy)||1;
+        if(d<140){var f=(140-d)/140*.7;a.x+=dx/d*f;a.y+=dy/d*f;}
+        if(a.x<-10)a.x=W+10;if(a.x>W+10)a.x=-10;if(a.y<-10)a.y=H+10;if(a.y>H+10)a.y=-10;
+      }
+    }
+    cx.lineWidth=1;
+    for(i=0;i<P.length;i++){
+      a=P[i];
+      for(j=i+1;j<P.length;j++){
+        b=P[j];d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<120){cx.globalAlpha=(1-d/120)*.18;cx.strokeStyle=cols[2];cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke();}
+      }
+      d=Math.hypot(a.x-M.x,a.y-M.y);
+      if(d<170){cx.globalAlpha=(1-d/170)*.55;cx.strokeStyle=cols[a.c===1?1:0];cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(M.x,M.y);cx.stroke();}
+    }
+    for(i=0;i<P.length;i++){a=P[i];cx.globalAlpha=.55;cx.fillStyle=cols[a.c];cx.beginPath();cx.arc(a.x,a.y,a.r,0,6.2832);cx.fill();}
+    cx.globalAlpha=1;
+    if(!reduce)requestAnimationFrame(draw);
+  }
+  addEventListener('pointermove',function(e){M.x=e.clientX;M.y=e.clientY;},{passive:true});
+  document.addEventListener('pointerleave',function(){M.x=M.y=-9999;});
+  var rt;addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(size,150);});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){readCols();if(reduce)draw();});
+  new MutationObserver(function(){readCols();if(reduce)draw();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  size();
+  if(!reduce)requestAnimationFrame(draw);
+})();
+</script>
+</body></html>
